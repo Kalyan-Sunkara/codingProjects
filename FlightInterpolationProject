@@ -1,0 +1,190 @@
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
+
+//1 2 3 4 5
+
+//Author Kalyan Tamati Sunkara
+
+using namespace std;
+
+void readData(const string &, vector<double> &, vector<double> &);
+double interpolation(double, const vector<double> &, const vector<double> &);
+bool isOrdered(const vector<double> &);
+void reorder(vector<double> &, vector<double> &);
+
+
+int main(int argc, char *argv[])
+{
+	vector<double> flightPathAngles;
+	vector<double> liftCoefficient;
+	double userFlightPath = 0.0;
+	string yes_or_no;
+	double answer1;
+	string fileName;
+	fileName = argv[1];
+	readData(fileName, flightPathAngles, liftCoefficient);
+	if(!(isOrdered(flightPathAngles)))
+	{
+		reorder(flightPathAngles, liftCoefficient);
+	}
+    for(unsigned i = 0; i < flightPathAngles.size(); i++)
+    {
+        cout << flightPathAngles.at(i) << " ";
+        cout << liftCoefficient.at(i) << endl;
+    }
+	cout << "What flight path angle would you like to know the lift coefficient for?" << endl;
+	cin >> userFlightPath;
+	answer1 = interpolation(userFlightPath, flightPathAngles, liftCoefficient);
+	cout << answer1 << endl;
+	cout << "Would you like to compute another lift coefficient('yes' or 'no')?" << endl;
+	cin >> yes_or_no;
+	while((yes_or_no != "no") && (yes_or_no != "No") )
+	{
+	cout << "What flight path angle would you like to know the lift coefficient for?" << endl;
+	cin >> userFlightPath;
+	answer1 = interpolation(userFlightPath,flightPathAngles, liftCoefficient);
+    cout << answer1 << endl;
+	cout << "Would you like to compute another lift coefficient('yes' or 'no')?" << endl;
+	cin >> yes_or_no;
+	}
+	
+	return 0;
+}
+
+void readData(const string& file, vector<TODO> &v1)
+{
+	double num;
+	int counter = 0;
+	ifstream inFS;
+	inFS.open(file);
+	if(!inFS.is_open())
+	{
+		// Output error message and return 1 if file stream did not open correctly.
+	   cout << "Error opening " << file << endl;
+	   exit(1);
+    }
+	while(!inFS.eof())
+	{
+		inFS >> num;
+		if (!inFS.fail()) 
+			{
+				if(counter%2 == 0)
+				{
+					v1.push_back(num);
+				}
+				else
+				{
+					v2.push_back(num);
+				}
+				counter++;
+			}
+	}
+}
+bool isOrdered(const vector<double> &vec1){
+if(vec1.size()==0){
+    return true;
+}
+    else{
+    
+    bool condition = true;
+   for(unsigned int i =0;i <vec1.size()-1;i++){
+    if(vec1.at(i) > vec1.at(i+1)){
+        condition = false;
+        }
+    }
+    
+    return condition;
+}
+}
+  
+
+void reorder(vector<double> &v1, vector<double> &v2)
+{
+	double min = 0;
+	int minLoc = 0;
+    if((v1.size() || v2.size()) == 0)
+    {
+        
+    }
+    else
+    {
+	for(unsigned i = 0; i < v1.size(); i++)
+	{
+		min = v1.at(i);
+		for(unsigned j = i; j < v1.size(); j++)
+		{
+			if(min > v1.at(j))
+			{
+				min = v1.at(j);
+				minLoc = j;
+			}
+		}
+		if(v1.at(i) != min)
+			{
+			swap(v1.at(i), v1.at(minLoc));
+			swap(v2.at(i), v2.at(minLoc));
+			}
+		}
+	}
+}
+double interpolation(double flightPath, const vector<double> &v1, const vector<double> &v2)
+{
+	int location = -1;
+	double MinFlightPath;
+	double MaxFlightPath;
+	double MinCoefficient;
+	double MaxCoefficient;
+    double counter = 0;
+	double answer = 0;
+    
+	if(flightPath <= v1.at(v1.size()-1) && flightPath >= v1.at(0))
+	{ 
+		for(unsigned i = 0; i < v1.size(); i++)
+		{
+			if(flightPath == v1.at(i))
+			{
+				location = i;
+			}
+		}
+		if(location != -1)
+		{
+			return v2.at(location);
+		}
+		else
+			{
+            while(flightPath > v1.at(counter))
+                {
+                counter++;
+                }
+            MinFlightPath = v1.at(counter-1);
+            if(counter != v1.size()-1)
+            {
+            MaxFlightPath = v1.at(counter);
+            }
+            else
+            {
+                MaxFlightPath = v1.at(v1.size()-1);
+            }
+            MinCoefficient = v2.at(counter-1);
+            if(counter != v2.size()-1)
+            {
+            MaxCoefficient = v2.at(counter);
+            }
+            else
+            {
+                MaxCoefficient = v2.at(v2.size()-1);
+            }
+//			f(b) = f(a) + ((b - a)/(c - a))(f(c) - f(a))
+			answer = MinCoefficient + ((flightPath - MinFlightPath)/(MaxFlightPath-MinFlightPath))*(MaxCoefficient - MinCoefficient);
+			return answer;
+			}
+		}
+	else
+	{
+		cout << "Flight Path Angle Not In Range!" << endl;
+		exit(1);
+	}
+}
