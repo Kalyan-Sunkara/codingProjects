@@ -1,0 +1,482 @@
+//Author Kalyan Tamati Sunkara
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cctype>
+
+
+using namespace std;
+
+
+
+class Date {
+
+private:
+ 
+   unsigned day;
+   unsigned month;
+   string monthName;
+   unsigned year;
+   
+ public:
+   Date();
+   
+   Date(unsigned m, unsigned d, unsigned y);
+   
+   Date(const string &mn, unsigned d, unsigned y);
+   
+  
+   void printNumeric() const;
+ 
+   void printAlpha() const;
+   
+ private:
+   bool isLeap(unsigned y) const;
+   unsigned daysPerMonth(unsigned m, unsigned y) const;
+   unsigned  monthChecker(unsigned m) const;
+//   
+//   /* Returns the name of a given month
+//
+//      - e.g. name(12) returns the string "December"
+//
+//   */
+   string name(unsigned m) const;
+ 
+   unsigned number(const string &mn) const;
+
+};
+
+// Implement the Date member functions here
+Date::Date()
+{
+	// creates the date January 1st, 2000.
+	day = 1;
+	month = 1;
+	monthName = "January";
+	year = 2000;
+}
+
+Date::Date(unsigned m, unsigned d, unsigned y)
+{
+	//0, 32, 2000
+	unsigned errorCheck = 0;
+	unsigned errorCheck1 = 0;
+	errorCheck1 = monthChecker(m);
+	year = y;
+	unsigned num;
+	num = number(name(m));
+	month = num;
+	monthName = name(m);
+	day = d;
+		unsigned max = daysPerMonth(month, year);
+		if(day > max)
+		{
+			day = max;
+			errorCheck++;
+		}
+		else if(day < 1)
+		{
+			day = 1;
+			errorCheck++;
+		}
+		else{
+			
+		}
+		if(errorCheck > 0 || errorCheck1 > 0)
+		{
+			cout << "Invalid date values: Date corrected to ";
+			printNumeric();
+			cout << "." << endl;
+		}
+	}
+	/* parameterized constructor: month number, day, year 
+       - e.g. (3, 1, 2010) will construct the date March 1st, 2010
+       If any of the arguments are invalid (e.g. 15 for month or 32 for day)
+       then the constructor will construct instead a valid Date as close
+       as possible to the arguments provided - e.g. in above example,
+       Date(15, 32, 2010), the Date would be corrected to Dec 31st, 2010.
+       In case of such invalid input, the constructor will issue a console error message: 
+       Invalid date values: Date corrected to 12/31/2010.
+       (with a newline at the end).
+   
+*/
+Date::Date(const string &mn, unsigned d, unsigned y)
+	{
+		
+   /* parameterized constructor: month name, day, year
+      - e.g. (December, 15, 2012) will construct the date December 15th, 2012
+       If the constructor is unable to recognize the string argument as a valid month name,
+       then it will issue a console error message: 
+       Invalid month name: the Date was set to 1/1/2000.
+       (with a newline at the end).
+       If the day argument is invalid for the given month (but the month name was valid),
+       then the constructor will handle this error in the same manner as the other
+       parameterized constructor. 
+       This constructor will recognize both "december" and "December"
+       as month name.
+   */
+	unsigned errorCheck = 0;
+	int month1 = number(mn);
+	year = y;
+	day = d;
+	if(month1 == -1)
+	{
+		cout << "Invalid month name: the Date was set to 1/1/2000." << endl;
+		monthName = "January";
+		month = 1;
+		day = 1;
+		year = 2000;
+	}
+	else
+	{
+		unsigned max = daysPerMonth(month1, year);
+		if(day > max)
+		{
+			errorCheck++;
+			day = max;
+		}
+		else if(day < 1)
+		{
+			errorCheck++;
+			day = 1;
+		}
+		else
+		{
+			
+		}
+		month = month1;
+		monthName = name(month1);
+		if(errorCheck > 0)
+		{
+			cout << "Invalid date values: Date corrected to ";
+			printNumeric();
+			cout << "." << endl;
+		}
+	}
+}
+//		day = d;
+//		if(month1 == 1 || month1 == 3 || month1 == 5 || month1 == 7 || month1 == 8 || month1 == 10 || month1 == 12)
+//		{
+//			if(day > 31)
+//			{
+//			day = 31;
+//			}
+//		}
+//		else if(month1 == 4 || month1 == 6 || month1 == 9 || month1 == 11)
+//		{
+//			if(day > 30)
+//			{
+//			day = 30;
+//			}
+//		}
+//		else
+//		{
+//			if(isLeap(y))
+//			{
+//				if(day > 29)
+//				{
+//					day = 29;
+//				}
+//			else
+//			{
+//				if(day > 28)
+//				{
+//					day = 28;
+//				}
+//		}
+//	}
+//	}
+	
+bool Date::isLeap(unsigned y) const
+/* Returns true if the year passed in is a leap year, otherwise returns false.
+
+   */
+{
+	if(y % 4 == 0)
+	{
+		if(y % 100 == 0)
+		{
+			if(y % 400 == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+unsigned Date::number(const string &mn) const
+{
+	  /* Returns the number of a given named month
+
+      - e.g. number("March") returns 3
+
+   */
+	int counter = 0;
+	int counter1 = 0;
+	unsigned monthNum = 0;
+	vector <string> months(24);
+	months.at(0) = "january";
+	months.at(1) = "february";
+	months.at(2) = "march";
+	months.at(3) = "april";
+	months.at(4) = "may";
+	months.at(5) = "june";
+	months.at(6) = "july";
+	months.at(7) = "august";
+	months.at(8) = "september";
+	months.at(9) = "october";
+	months.at(10) = "november";
+	months.at(11) = "december";
+	months.at(12) = "January";
+	months.at(13) = "February";
+	months.at(14) = "March";
+	months.at(15) = "April";
+	months.at(16) = "May";
+	months.at(17) = "June";
+	months.at(18) = "July";
+	months.at(19) = "August";
+	months.at(20) = "September";
+	months.at(21) = "October";
+	months.at(22) = "November";
+	months.at(23) = "December";
+	for(unsigned i = 0; i < months.size(); i++)
+	{
+		if(mn == months.at(i))
+		{
+			counter++;
+			counter1 = i;
+		}
+	}
+	if(counter ==  0)
+	{
+		return -1;
+	}
+	else
+	{
+		if(counter1 < 12)
+		{
+			monthNum = counter1 + 1;
+		}
+		else
+		{
+			monthNum = counter1 - 11;
+		}
+		return monthNum;
+	}
+}
+void Date::printNumeric() const
+{
+	/* Outputs to the console (cout) a Date exactly in the format "3/15/2012". 
+      Does not output a newline at the end.
+   */
+   cout << month  << "/" << day << "/" << year;
+}
+
+
+void Date::printAlpha() const
+{
+	/* Outputs to the console (cout) a Date exactly in the format "March 15, 2012".
+      The first letter of the month name is upper case, and the month name is
+      printed in full - January, not Jan, jan, or january. 
+      Does not output a newline at the end.
+   */
+   cout << monthName << " " << day << ", " << year;
+}
+
+unsigned Date::daysPerMonth(unsigned m, unsigned y) const
+{
+		if(m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
+		{
+			return 31;
+		}
+		else if(m == 4 || m == 6 || m == 9 || m == 11)
+		{
+			return 30;
+		}
+		else
+		{
+			if(isLeap(y))
+			{
+				return 29;
+			}
+			else
+			{
+				return 28;
+		}
+	}
+}
+
+
+string Date::name(unsigned m) const
+{
+   /* Returns the name of a given month
+//
+//      - e.g. name(12) returns the string "December"
+//
+//   */
+	vector<string> months(12);
+	months.at(0) = "January";
+	months.at(1) = "February";
+	months.at(2) = "March";
+	months.at(3) = "April";
+	months.at(4) = "May";
+	months.at(5) = "June";
+	months.at(6) = "July";
+	months.at(7) = "August";
+	months.at(8) = "September";
+	months.at(9) = "October";
+	months.at(10) = "November";
+	months.at(11) = "December";
+	if(m > 0)
+	{
+	m = m-1;
+	}
+	if(m > 11)
+	{
+		m = 11;
+		return months.at(m);
+	}
+	else
+	{
+		return months.at(m);
+	}
+ 
+}
+unsigned Date::monthChecker(unsigned m) const
+{
+	if(m > 12)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+// Don't change the code below this line.
+
+// You may comment them out if you want to build your own test harness
+
+// while in develope mode, but you will need these to pass tets in submit mode.
+
+
+
+Date getDate();
+
+
+
+int main() {
+
+   
+
+   Date testDate;
+
+   testDate = getDate();
+
+   cout << endl;
+
+   cout << "Numeric: ";
+
+   testDate.printNumeric();
+
+   cout << endl;
+
+   cout << "Alpha:   ";
+
+   testDate.printAlpha();
+
+   cout << endl;
+
+   
+
+   return 0;
+
+}
+
+
+
+Date getDate() {
+
+   int choice;
+
+   unsigned monthNumber, day, year;
+
+   string monthName;
+
+
+
+   cout << "Which Date constructor? (Enter 1, 2, or 3)" << endl
+
+      << "1 - Month Number" << endl
+
+      << "2 - Month Name" << endl
+
+      << "3 - default" << endl;
+
+   cin >> choice;
+
+   cout << endl;
+
+
+
+   if (choice == 1) {
+
+      cout << "month number? ";
+
+      cin >> monthNumber;
+
+      cout << endl;
+
+      cout << "day? ";
+
+      cin >> day;
+
+      cout << endl;
+
+      cout << "year? ";
+
+      cin >> year;
+
+      cout << endl;
+
+      return Date(monthNumber, day, year);
+
+   } else if (choice == 2) {
+
+      cout << "month name? ";
+
+      cin >> monthName;
+
+      cout << endl;
+
+      cout << "day? ";
+
+      cin >> day;
+
+      cout << endl;
+
+      cout << "year? ";
+
+      cin >> year;
+
+      cout << endl;
+
+      return Date(monthName, day, year);
+
+   } else {
+
+      return Date();
+
+   }
+
+}
+
