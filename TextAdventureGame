@@ -1,0 +1,1438 @@
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <time.h>
+#include <cmath>
+
+using namespace std;
+
+class player{
+public:
+	string name;
+	int health;
+	int attackPower;
+	void displayPlayer()
+	{
+		cout << endl;
+		cout << "Health is currently: " << health << endl;
+		cout << "Attack power is currently: " << attackPower << endl;
+		cout << endl;
+	}
+};
+
+class Gem{
+public:
+	string gemName;
+	void displayGem()
+	{
+		cout << "Gem Name: " << gemName << endl;
+	}
+	
+};
+class Monster {       
+	public:
+	 string monsterName;
+	 int monsterHealth;
+	 void monsterSlain()
+	 {
+		 cout << endl;
+		 cout <<"Monster has been slain in this room!" << endl;
+		 cout << endl;
+	 }
+};
+
+class Room {       
+	public:             
+    int roomID; 
+	//if integer is 1 then there is a monster in the room
+	//if integer is 0 then there is no monster in the room
+	int occupied_or_not = rand()%2; 
+	string roomName;
+	string roomDescription;
+	string escapeKey;
+	void display()
+	{
+		cout << endl;
+		cout << "Room ID: " << roomID << endl;
+		cout << "Room Name: " << roomName << endl;
+		cout << "Room Description: " << roomDescription << endl;
+		cout << "Escape Key: " << escapeKey << endl;
+		cout << endl;
+	}
+	void displayRoomName()
+	{
+		cout << "Room Name: " << roomName << endl;
+		cout << endl;
+	}
+	int isRoomOccupied()
+	{
+		if(occupied_or_not == 1)
+		{
+		cout << "There is a Monster" << endl;
+		cout << endl;
+		return 1;
+		}
+		else
+		{
+		cout << "There is no Monster" << endl;
+		cout << endl;
+		return 0;
+		}
+	}
+	
+};
+
+	 // this function modifies the user response in the riddle combat so that plurals and capitals are allowed as a response
+	 string answerChoiceCorrection(string &originalString)
+	{
+		string userResponseModified;
+		for(int i = 0; i < originalString.size(); i++)
+		{
+			userResponseModified += tolower(originalString.at(i));
+		}
+		if(userResponseModified.at(userResponseModified.size()-1) == 's')
+		{
+			userResponseModified.pop_back();
+		}
+		return userResponseModified;
+	}
+	void ClearScreen()
+    {
+    cout << string( 100, '\n' );
+    }
+	void riddleCombat(int &playerHealth, int &monstersHealth, int &playerAttackPower, char &input)
+	{
+		string userResponse;
+		//two vectors are used to cross refrence the question with the answer
+		vector<string> riddles(4);
+		vector<string> answers(4);
+		riddles.at(0) = "I can fly but have no wings. I can cry but I have no eyes. Wherever I go, darkness follows me. What am I?"; //clouds
+		riddles.at(1) = "The more you take, the more you leave behind. What am I?"; //footsteps
+		riddles.at(2) = "You can see me in water, but I never get wet. What am I?";  //reflection
+		riddles.at(3) = "I'm tall when I'm young, I'm short when I'm old. What am I?"; // candle
+		//riddles.at(4) = "People buy me to eat, but never eat me. What am I?"; //plate
+		answers.at(0) = "cloud";
+		answers.at(1) = "footstep";
+		answers.at(2) = "reflection";
+		answers.at(3) = "candle";
+		//answers.at(4) = "plate";
+		
+		
+		cout << endl;
+		cout << "You have encountered the Riddle Monster!"  << endl;
+		cout << endl;
+		cout <<  "The Rules of Engangement are simple:" << endl;
+		cout << "The Monster shall ask you riddles that have ONE word answers. If you are able to get 4 of them right then the Monster will die." << endl;
+		cout << "However every wrong answer causes you health to decrease." << endl;
+		cout << "Good Luck!" << endl;
+		while(playerHealth > 0 && monstersHealth > 0)
+		{
+		cout << endl;
+		cout << "The first question is: " << endl;
+		cout << riddles.at(0) << endl;
+		cin >> userResponse;
+		while(answerChoiceCorrection(userResponse) != answers.at(0) && playerHealth > 0)
+		{
+			cout << endl;
+			cout << "That's the wrong answer!" << endl;
+			cout << endl;
+			cout << "Your current health is: " << playerHealth << endl;
+			cout <<  endl;
+			playerHealth = playerHealth - 10;
+			cout << riddles.at(0) << endl;
+			cin >> userResponse;
+		}
+	if(playerHealth <= 0)
+		{
+		input = 'q';
+		}
+	else{
+		cout << endl;
+		monstersHealth = monstersHealth - 25;
+		cout <<  endl;
+		cout << "Congrats, you got the right answer!" << endl;
+		cout << "The second question is: " << endl;
+		cout << riddles.at(1) << endl;
+		cin >> userResponse;
+		while(answerChoiceCorrection(userResponse) != answers.at(1) && playerHealth > 0)
+		{
+			cout << endl;
+			cout << "That's the wrong answer!" << endl;
+			cout << endl;
+			cout << "Your current health is: " << playerHealth << endl;
+			cout <<  endl;
+			playerHealth = playerHealth - 10;
+			cout << riddles.at(1) << endl;
+			cin >> userResponse;
+		}
+		if(playerHealth <= 0)
+		{
+		input = 'q';
+		}
+		else
+		{
+		monstersHealth = monstersHealth - 25;
+		cout <<  endl;
+		cout << "Congrats, you got the right answer!" << endl;
+		cout << "The third question is: " << endl;
+		cout << riddles.at(2) << endl;
+		cin >> userResponse;
+		while(answerChoiceCorrection(userResponse) != answers.at(2) && playerHealth > 0)
+		{
+			cout << endl;
+			cout << "That's the wrong answer!" << endl;
+			cout << endl;
+			cout << "Your current health is: " << playerHealth << endl;
+			cout <<  endl;
+			playerHealth = playerHealth - 10;
+			cout << riddles.at(2) << endl;
+			cin >> userResponse;
+		}
+		if(playerHealth <= 0)
+		{
+		input = 'q';
+		}
+		else
+		{
+		monstersHealth = monstersHealth - 25;
+		cout << endl;
+		cout << "Congrats, you got the right answer!" << endl;
+		cout << "The third question is: " << endl;
+		cout << riddles.at(3) << endl;
+		cin >> userResponse;
+		while(answerChoiceCorrection(userResponse) != answers.at(3) && playerHealth > 0)
+		{
+			cout << endl;
+			cout << "That's the wrong answer!" << endl;
+			cout << endl;
+			cout << "Your current health is: " << playerHealth << endl;
+			cout <<  endl;
+			playerHealth = playerHealth - 10;
+			cout << riddles.at(3) << endl;
+			cin >> userResponse;
+		}
+		monstersHealth = monstersHealth - 25;
+		cout << endl;
+		cout << "Congrats, you have answered all the questions correctly" <<  endl;
+		cout << endl;
+		}
+		if(playerHealth <= 0)
+		{
+		input = 'q';
+		}
+		else{
+			cout << endl;
+		cout << "You have killed the monster of Riddles..." << endl;
+		playerHealth = playerHealth + 50;
+		cout << endl;
+		cout << "We shall boost your attack power!!" << endl;
+		cout << endl;
+		playerAttackPower = playerAttackPower + 10;
+		}
+		}
+		}
+	}
+	}
+	
+	//This is the code for the east Room battle
+	void pokemonTypeCombat(int &playerHealth, int &monstersHealth, int &playerAttackPower, char &input)
+	{
+		cout << endl;
+		cout << "You have encountered the Combat Monster!"  << endl;
+		cout << endl;
+		cout <<  "The Rules of Engangement are simple:" << endl;
+		cout << "You take turns attacking each other, choose the attack you would like to play: " << endl;
+		char playerAttack;
+		int attackToChoose;
+		while(playerHealth > 0 && monstersHealth > 0)
+	{
+		cout << "------------------------------------" << endl;
+		cout << "'S' - Stab(Does Attack Power)" << endl;
+		cout << "'D' - Dodge(Not affected by attack)" << endl;
+		cout << "'K' - Speed Punch(Does Attack Power - 10, cannot be blocked)" << endl;
+		cout << "------------------------------------" << endl;
+		cout << endl;
+		cout << "Enter Your Attack: ";
+		cin >> playerAttack;
+		while(playerAttack != 'S' && playerAttack != 's' && playerAttack != 'D' && playerAttack != 'd' && playerAttack != 'K' && playerAttack != 'k')
+		{
+			cout << "Please choose a valid attack!" << endl;
+			cout << "Enter Your Attack: ";
+			cin >> playerAttack;
+		}
+			
+		attackToChoose = rand() % 4;
+		if(attackToChoose == 0)
+		{
+			cout << endl;
+			cout << "The Monster blocked" << endl;
+			if(playerAttack == 'K' || playerAttack == 'k')
+			{
+				cout << endl;
+				cout << "You broke thorugh the Monster's Block!!" << endl;
+				monstersHealth = monstersHealth - playerAttackPower + 10;
+				cout << endl;
+			}
+			else
+			{
+				cout << endl;
+				cout << "Your attack had no effect" << endl;
+				cout << endl;
+			}
+		}
+		else if(attackToChoose == 1)
+		{
+			cout << endl;
+			cout  << "The Monster used SLAM" << endl;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				cout << endl;
+				cout << "You were hit!" << endl;
+				cout << endl;
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << endl;
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << endl;
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << "You dodged the attack!" << endl;
+			}
+		}
+		else if(attackToChoose == 2)
+		{
+			cout << "The Monster used ACID SPEW" << endl;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				cout << endl;
+				cout << "You were hit!" << endl;
+				cout << endl;
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << "You dodged the attack!" << endl;
+			}
+		}
+		else
+		{
+			cout << "The Monster used HEALTH BUFF" << endl;
+			cout << endl;
+			monstersHealth = monstersHealth + 10;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << endl;
+				cout << "Nothing Happened" << endl;
+				cout << endl;
+			}
+		}
+		cout << "Your current health is: " << playerHealth << endl;
+		cout << "The Monster's health is: " << monstersHealth << endl;
+		cout << endl;
+	}
+	if(playerHealth <= 0)
+	{
+		input = 'q';
+	}
+	else{
+		cout << "Congrats you have killed the monster of Combat..." << endl;
+		playerHealth = playerHealth + 50;
+		cout << "We shall boost your attack power!!" << endl;
+		playerAttackPower = playerAttackPower + 10;
+	}
+	}
+	void pokemonTypeCombat2(int &playerHealth, int &monstersHealth, int &playerAttackPower, char &input)
+	{
+		cout << endl;
+		cout << "You have encountered the Combat Monster!"  << endl;
+		cout << endl;
+		cout <<  "The Rules of Engangement are simple:" << endl;
+		cout << "You take turns attacking each other, choose the attack you would like to play: " << endl;
+		char playerAttack;
+		int attackToChoose;
+		while(playerHealth > 0 && monstersHealth > 0)
+	{
+		cout << "------------------------------------" << endl;
+		cout << "'S' - Stab(Does Attack Power)" << endl;
+		cout << "'D' - Dodge(Not affected by attack)" << endl;
+		cout << "'K' - Speed Punch(Does Attack Power - 10, cannot be blocked)" << endl;
+		cout << "------------------------------------" << endl;
+		cout << endl;
+		cout << "Enter Your Attack: ";
+		cin >> playerAttack;
+		while(playerAttack != 'S' && playerAttack != 's' && playerAttack != 'D' && playerAttack != 'd' && playerAttack != 'K' && playerAttack != 'k')
+		{
+			cout << "Please choose a valid attack!" << endl;
+			cout << "Enter Your Attack: ";
+			cin >> playerAttack;
+		}
+			
+		attackToChoose = rand() % 4;
+		if(attackToChoose == 0)
+		{
+			cout << endl;
+			cout << "The Monster blocked" << endl;
+			if(playerAttack == 'K' || playerAttack == 'k')
+			{
+				cout << endl;
+				cout << "You broke thorugh the Monster's Block!!" << endl;
+				monstersHealth = monstersHealth - playerAttackPower + 10;
+				cout << endl;
+			}
+			else
+			{
+				cout << endl;
+				cout << "Your attack had no effect" << endl;
+				cout << endl;
+			}
+		}
+		else if(attackToChoose == 1)
+		{
+			cout << endl;
+			cout  << "The Monster used SLASH" << endl;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				cout << endl;
+				cout << "You were hit!" << endl;
+				cout << endl;
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << endl;
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << endl;
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << "You dodged the attack!" << endl;
+			}
+		}
+		else if(attackToChoose == 2)
+		{
+			cout << "The Monster used HYPER BEAM" << endl;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				cout << endl;
+				cout << "You were hit!" << endl;
+				cout << endl;
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << "You dodged the attack!" << endl;
+			}
+		}
+		else
+		{
+			cout << "The Monster used Absorb" << endl;
+			cout << endl;
+			monstersHealth = monstersHealth + 10;
+			playerHealth = playerHealth - 10;
+			if(playerAttack != 'D' && playerAttack != 'd')
+			{
+				playerHealth = playerHealth - 10;
+				if(playerAttack == 'K' || playerAttack == 'k')
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower + 10;
+					cout << endl;
+				}
+				else
+				{
+					cout << "Your attack landed" << endl;
+					monstersHealth = monstersHealth - playerAttackPower;
+				}
+					
+			}
+			else
+			{
+				cout << endl;
+				cout << "Nothing Happened" << endl;
+				cout << endl;
+			}
+		}
+		cout << "Your current health is: " << playerHealth << endl;
+		cout << "The Monster's health is: " << monstersHealth << endl;
+		cout << endl;
+	}
+	if(playerHealth <= 0)
+	{
+		input = 'q';
+	}
+	else{
+		cout << "Congrats you have killed the monster of Combat..." << endl;
+		playerHealth = playerHealth + 50;
+		cout << "We shall boost your attack power!!" << endl;
+		playerAttackPower = playerAttackPower + 10;
+	}
+	}
+	void randomNumberCombat(int &playerHealth, int &monstersHealth, int &playerAttackPower, char &input)
+	{
+		cout << endl;
+		cout << "You have encountered the Luck Monster!" << endl;
+		cout << endl;
+		cout << "The rules of engangement are simple: " << endl;
+		cout << "Both you and the monster will choose a number 0-10," << endl;
+		cout << "If you are in three digits of each other, you lose 10 health, otherwise it loses health..." << endl;
+		cout << "Good luck" << endl;
+		cout << endl;
+		int monsterChosenNumber;
+		int yourChosenNumber;
+	while(playerHealth > 0 && monstersHealth > 0)
+	{
+		cout << endl;
+		cout << "Please choose a number in between 0-10 inclusive..." << endl;
+		cin >> yourChosenNumber;
+		while(yourChosenNumber > 10 || yourChosenNumber < 0)
+		{
+			cout << "Please choose a number in between 0-10 inclusive..." << endl;
+			cin >> yourChosenNumber;
+		}
+		cout << "You chose: " << yourChosenNumber << endl;
+		monsterChosenNumber = (rand() % 10) + 1;
+		cout << "The monster chose: " << monsterChosenNumber << endl;
+		cout << endl;
+		if(abs(yourChosenNumber - monsterChosenNumber) <= 3)
+		{
+			playerHealth = playerHealth - 10;
+		}
+		else
+		{
+			monstersHealth = monstersHealth - playerAttackPower;
+		}
+		cout << "Your current health is: " << playerHealth << endl;
+		cout << "The Monster's health is: " << monstersHealth << endl;
+	}
+	if(playerHealth <= 0)
+	{
+		input = 'q';
+	}
+	else{
+		cout << "Congrats you have killed the monster of luck and chance..." << endl;
+		playerHealth = playerHealth + 50;
+		cout << "We shall boost your attack power!!" << endl;
+		playerAttackPower = playerAttackPower + 10;
+	}
+}
+
+int findElementInVector(vector<int> &random, int number)
+{
+	int index;
+	for(int i = 0; i < random.size(); i++)
+	{
+		if(random.at(i) == number)
+		{
+			index = i;
+		}
+	}
+	return index;
+	
+}
+void roomReset(int &xValue, int &yValue)
+{
+	xValue = 0;
+	yValue = 0;
+}
+
+// this function will choose a random monster to spawn in a certain room;
+
+int main()
+{
+	vector<int> monsters(4);
+	for(int i = 0; i < monsters.size(); i++)
+	{
+		monsters.at(i) = i;
+	}
+	ClearScreen();
+	srand(time(0));
+	int monsterPresent;
+	int monstersKilled = 0;
+	int nMonsterSlain = 0;
+	int sMonsterSlain = 0;
+	int wMonsterSlain = 0;
+	int eMonsterSlain = 0;
+	int roomXCoordinate  = 0;
+	int roomYCoordinate  = 0;
+	int playerEnterRoom1 = 0;
+	int playerEnterRoom2 = 0;
+	int playerEnterRoom3 = 0;
+	int playerEnterRoom4 = 0;
+	int playerEnterRoom5 = 0;
+	int playerFindGem1 = 0;
+	int playerFindGem2 = 0;
+	int playerFindGem3 = 0;
+	int playerFindGem4 = 0;
+	int numberOfGemsCollected = 0;
+	int indexToErase;
+	int randomNumber1;
+	int randomNumber2;
+	int randomNumber3;
+	int randomNumber4;
+	player player1;
+	player1.health = 100;
+	player1.attackPower = 20;
+	
+	Monster monster1;
+	monster1.monsterHealth = 100;
+	monster1.monsterName = "The Luck Monster";
+	
+	Monster monster2;
+	monster2.monsterHealth = 100;
+	monster2.monsterName = "The Combat Monster";
+	
+	Monster monster3;
+	monster3.monsterHealth = 100;
+	monster3.monsterName = "The Riddle Monster";
+	
+	Monster monster4;
+	monster4.monsterHealth = 100;
+	monster4.monsterName = "The Unknown Monster";
+	
+	Gem gem1;
+	gem1.gemName = "Blue gem";
+	Gem gem2;
+	gem2.gemName = "Green gem";
+	Gem gem3;
+	gem3.gemName = "Purple gem";
+	Gem gem4;
+	gem4.gemName = "Red Gem";
+	
+	char selection1;
+	//introduction
+	cout << "As you eyes slowly open to the dim lit room, Your adventure begins..." << endl;
+	cout << "What is your name?" << endl;
+	getline(cin, player1.name);
+	cout << "Ahhhh so your name is " << player1.name << "...Well nice to meet you" << endl;
+	cout << "Press enter to advance dialougue..." << endl;
+	cin.ignore();
+	cout << "Well consider me a friendly voice, but you are currently stuck here in a maze..." << endl;
+	cin.ignore();
+	cout << "The only way out is to find all the mystical Gems within the labrynth and then finding the exit" << endl;
+	cin.ignore();
+	cout << "Some rooms might have a monster or might have once upon a time, each room contains a gem required to escape!" << endl;
+	cin.ignore();
+	cout << "Now pick up the rusty knife next to you...and get to work" << endl;
+	cin.ignore();
+	cout << "Be wary, this is not going to be an easy task, so goodluck "  << player1.name << endl;
+	cin.ignore();
+	cout << "Press 'G' to begin the game" << endl;
+	cin >> selection1;
+	while(selection1 != 'G' && selection1 != 'g')
+	{
+		cout << "Please press 'G'" << endl;
+		cin >> selection1;
+	}
+	
+		Room room1;
+		room1.roomID = 1;
+		room1.roomName = "Starting room";
+		room1.roomDescription = " ";
+		room1.escapeKey = " ";
+		Room room2;
+		room2.roomID = 2;
+		room2.roomName = "East Room";
+		room2.roomDescription = " ";
+		room2.escapeKey = "To escape press W";
+		Room room3;
+		room3.roomID = 3;
+		room3.roomName = "West Room";
+		room3.roomDescription = " ";
+		room3.escapeKey = "To escape press E";
+		Room room4;
+		room4.roomID = 4;
+		room4.roomName = "North Room";
+		room4.roomDescription = " ";
+		room4.escapeKey = "To escape press S";
+		Room room5;
+		room5.roomID = 5;
+		room5.roomName = "South Room";
+		room5.roomDescription = " ";
+		room5.escapeKey = "To escape press N";
+		Room room6;
+		room6.roomID = 6;
+		room6.roomName = "THE EXIT";
+		room6.roomDescription = " ";
+		room6.escapeKey = " ";
+		
+	char selection;
+		cout <<"Commands" << endl;
+		cout << "____________" << endl;
+		cout << endl;
+		cout << "N - 'North'" << endl;
+		cout << "S - 'South'" << endl;
+		cout << "W - 'West'" << endl;
+		cout << "E - 'East'"<< endl;
+		cout << "L - 'Look'" << endl;
+		cout << "P - 'Player Status'" << endl;
+		cout << "Q - 'Quit Game'" <<  endl;
+		cout << endl;
+   
+	do {
+		//game ends if the player's health drops below 0
+		if(player1.health <= 0)
+		{
+			selection = 'q';
+		}
+		else{
+			// Display menu
+			cout <<  "---------------------------------------------------------------------" <<  endl;
+        cout << "Enter which direction you would like to go or look at current room: ";
+        cin >> selection;
+		
+		if (selection == 'E' || selection == 'e') {
+			cout << endl;
+			cout << "You moved east" << endl;
+			//the if statement solves the problem of going past a room
+			if(roomXCoordinate < 1 && roomXCoordinate > -2)
+			{
+			roomXCoordinate++;
+			}
+			else
+			{
+				cout << endl;
+				cout << "cannot move there..." << endl;
+			}
+			
+			//this if statement distinguishes if the player has been in the room before
+			if(roomXCoordinate == 0 && roomYCoordinate == 0)
+			{
+				if(playerEnterRoom1 == 0)
+				{
+				room1.display();
+				playerEnterRoom1++;
+				}
+				else
+				{
+				room1.displayRoomName();
+				}
+			}
+			
+			else if(roomXCoordinate == 1 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom2 == 0)
+				{
+				room2.display();
+				playerEnterRoom2++;
+				}
+				else
+				{
+				room2.displayRoomName();
+				}
+				//the if statement below shows whether or not the monster has already been killed in a certain room
+			if(eMonsterSlain == 0)
+			{
+			monsterPresent = room2.isRoomOccupied();
+				if(monsterPresent == 1)
+				{
+				char fightMonster3;
+				cout << endl;
+				cout << "Would you like to fight the monster in the room?(Press 'F' otherwise press any other key)" << endl;
+				  cin >> fightMonster3;
+				  if(fightMonster3 == 'f' || fightMonster3 == 'F')
+				  {
+					randomNumber1 = rand() % (4 - monstersKilled);
+					if(monsters.at(randomNumber1) == 0)
+					{
+					riddleCombat(player1.health, monster3.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 0);
+					monsters.erase(monsters.begin() + indexToErase);
+					cout << endl;
+					}
+					else if(monsters.at(randomNumber1) == 1)
+					{
+					pokemonTypeCombat(player1.health, monster2.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else  if(monsters.at(randomNumber1) == 2)
+					{
+					randomNumberCombat(player1.health, monster1.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber1) == 3)
+					{
+						pokemonTypeCombat2(player1.health, monster4.monsterHealth, player1.attackPower, selection);
+						indexToErase = findElementInVector(monsters, 1);
+						monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber1) == 3)
+					{
+						pokemonTypeCombat2(player1.health, monster4.monsterHealth, player1.attackPower, selection);
+						indexToErase = findElementInVector(monsters, 1);
+						monsters.erase(monsters.begin() + indexToErase);
+					}
+					cout << endl;
+					cout << "You have found a gem!" << endl;
+					cout << endl;
+					cout << "The gem is the: ";
+					gem1.displayGem();
+					cout <<  endl;
+					numberOfGemsCollected++;
+					eMonsterSlain++;
+					monstersKilled++;
+				  }
+				  else
+				  {
+					  cout << "You have chosen not to fight" << endl;
+					  cout << "You shall now be moved back to the starting room" << endl;
+					  roomReset(roomXCoordinate, roomYCoordinate);
+					  room1.displayRoomName();
+				  }
+			}
+			else
+			{
+				cout << endl;
+				cout << "The room has been abandoned for a while...only a carcass of a monster remains" << endl;
+				if(playerFindGem3 == 0)
+				{
+				cout << "Within the room you find a gem!" << endl;
+					cout << endl;
+					cout << "The gem is the: ";
+					gem1.displayGem();
+					cout <<  endl;
+				numberOfGemsCollected++;
+				playerFindGem3++;
+				}
+			}
+			}
+			else
+			{
+				cout << endl;
+				cout << "The Monster has been slain in this room" << endl;
+				cout << endl;
+			}
+		}
+			else if(roomXCoordinate == -1 && roomYCoordinate == 0)
+			{
+				if(playerEnterRoom3 == 0)
+				{
+				room3.display();
+				playerEnterRoom3++;
+				}
+				else
+				{
+				room3.displayRoomName();
+				}
+			monsterPresent = room3.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 1)
+			{
+				if(playerEnterRoom4 == 0)
+				{
+				room4.display();
+				playerEnterRoom4++;
+				}
+				else
+				{
+				room4.displayRoomName();
+				}
+			monsterPresent = room4.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == -1)
+			{
+				if(playerEnterRoom5 == 0)
+				{
+				room5.display();
+				playerEnterRoom5++;
+				}
+				else
+				{
+				room5.displayRoomName();
+				}
+			monsterPresent = room5.isRoomOccupied();
+			}
+			else
+			{
+			cout << "Invalid direction" << endl;
+			}
+		}
+		else if (selection == 'N' || selection == 'n') {
+		   cout << endl;
+           cout << "You moved north" << endl;
+		   if(roomYCoordinate <= 1 && roomYCoordinate >=  -1)
+		   {
+		   roomYCoordinate++;
+		   }
+		   else
+		   {
+			   cout << endl;
+			   cout << "Cannot move there" << endl;
+		   }
+		   
+		   if(roomXCoordinate == 0 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom1 == 0)
+				{
+				room1.display();
+				playerEnterRoom1++;
+				}
+				else
+				{
+				room1.displayRoomName();
+				}
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 1)
+			{
+			if(playerEnterRoom4 == 0)
+				{
+				room4.display();
+				playerEnterRoom4++;
+				}
+				else
+				{
+				room4.displayRoomName();
+				}
+			if(nMonsterSlain == 0)
+			{
+			monsterPresent = room4.isRoomOccupied();
+				if(monsterPresent == 1)
+				{
+				char fightMonster3;
+				cout << endl;
+				cout << "Would you like to fight the monster in the room?(Press 'F' otherwise press any other key)" << endl;
+				  cin >> fightMonster3;
+				  if(fightMonster3 == 'f' || fightMonster3 == 'F')
+				  {
+					randomNumber2 = rand()%  (3 - monstersKilled);
+					if(monsters.at(randomNumber2) == 0)
+					{
+					riddleCombat(player1.health, monster3.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 0);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber2) == 1)
+					{
+					pokemonTypeCombat(player1.health, monster2.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else  if(monsters.at(randomNumber2) == 2)
+					{
+					randomNumberCombat(player1.health, monster1.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber2) == 3)
+					{
+						pokemonTypeCombat2(player1.health, monster4.monsterHealth, player1.attackPower, selection);
+						indexToErase = findElementInVector(monsters, 1);
+						monsters.erase(monsters.begin() + indexToErase);
+					}
+					cout << endl;
+					cout << "You have found a gem!" << endl;
+					cout << endl;
+					cout << "The gem is the: ";
+					gem2.displayGem();
+					cout <<  endl;
+					numberOfGemsCollected++;
+					nMonsterSlain++;
+					monstersKilled++;
+				  }
+				  else
+				  {
+					  cout << "You have chosen not to fight" << endl;
+					  cout << "You shall now be moved back to the starting room" << endl;
+					  roomReset(roomXCoordinate, roomYCoordinate);
+					  room1.displayRoomName();
+				  }
+			}
+			else
+			{
+				cout << endl;
+				cout << "The room has been abandoned for a while...only a carcass of a monster remains" << endl;
+				if(playerFindGem1 == 0)
+				{
+				cout << "Within the room you find a gem!" << endl;
+					cout << "The gem is the: ";
+					gem2.displayGem();
+					cout <<  endl;
+				numberOfGemsCollected++;
+				playerFindGem1++;
+				}
+			}
+			}
+			else
+			{
+				cout << endl;
+				cout << "The Monster has been slain in this room" << endl;
+				cout << endl;
+			}
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == -1)
+			{
+			if(playerEnterRoom5 == 0)
+				{
+				room5.display();
+				playerEnterRoom5++;
+				}
+				else
+				{
+				room5.displayRoomName();
+				}
+			monsterPresent = room5.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 2)
+			{
+				if(numberOfGemsCollected == 4)
+				{
+					room6.display();
+					cout << endl;
+					cout << "Congrats you have won the game!!!" << endl;
+					cout << endl;
+					selection = 'q';
+				}
+				else{
+					cout << endl;
+					cout << "You cannot access the exit yet until you acquire all the gems!" << endl;
+					cout << endl;
+					cout << "You shall now be moved back to the starting room" << endl;
+					roomReset(roomXCoordinate, roomYCoordinate);
+					room1.displayRoomName();
+				}
+			}
+			else
+			{
+			cout << "Invalid direction" << endl;
+			}
+		}else if (selection == 'W' || selection == 'w') {
+			cout << endl;
+		    cout << "You moved west" << endl;
+			if(roomXCoordinate <= 1 && roomXCoordinate > -1)
+			{
+			roomXCoordinate--;
+			}
+			else
+			{
+				cout << endl;
+				cout << "cannot move there..." << endl;
+			}
+			if(roomXCoordinate == 0 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom1 == 0)
+				{
+				room1.display();
+				playerEnterRoom1++;
+				}
+				else
+				{
+				room1.displayRoomName();
+				}
+			}
+			else if(roomXCoordinate == 1 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom2 == 0)
+				{
+				room2.display();
+				playerEnterRoom2++;
+				}
+				else
+				{
+				room2.displayRoomName();
+				}
+			monsterPresent = room2.isRoomOccupied();
+			}
+			else if(roomXCoordinate == -1 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom3 == 0)
+				{
+				room3.display();
+				playerEnterRoom3++;
+				}
+				else
+				{
+				room3.displayRoomName();
+				}
+				
+			if(wMonsterSlain == 0)
+			{
+			monsterPresent = room3.isRoomOccupied();
+				if(monsterPresent == 1)
+				{
+				char fightMonster3;
+				cout << endl;
+				cout << "Would you like to fight the monster in the room?(Press 'F' otherwise press any other key)" << endl;
+				  cin >> fightMonster3;
+				  if(fightMonster3 == 'f' || fightMonster3 == 'F')
+				  {
+					randomNumber3 = rand()% (3 - monstersKilled);
+					if(monsters.at(randomNumber3) == 0)
+					{
+					riddleCombat(player1.health, monster3.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 0);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber3) == 1)
+					{
+					pokemonTypeCombat(player1.health, monster2.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber3) == 2)
+					{
+					randomNumberCombat(player1.health, monster1.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber3) == 3)
+					{
+						pokemonTypeCombat2(player1.health, monster4.monsterHealth, player1.attackPower, selection);
+						indexToErase = findElementInVector(monsters, 1);
+						monsters.erase(monsters.begin() + indexToErase);
+					}
+					cout << endl;
+					cout << "You have found a gem!" << endl;
+					cout << endl;
+					cout << "The gem is the: ";
+					gem3.displayGem();
+					cout <<  endl;
+					numberOfGemsCollected++;
+					wMonsterSlain++;
+					monstersKilled++;
+				  }
+				  else
+				  {
+					  cout << "You have chosen not to fight" << endl;
+					  cout << "You shall now be moved back to the starting room" << endl;
+					  roomReset(roomXCoordinate, roomYCoordinate);
+					  room1.displayRoomName();
+				  }
+				}
+				else
+			{
+				cout << endl;
+				cout << "The room has been abandoned for a while...only a carcass of a monster remains" << endl;
+				if(playerFindGem2 == 0)
+				{
+				cout << "Within the room you find a gem!" << endl;
+				cout << endl;
+				cout << "The gem is the: ";
+				gem3.displayGem();
+				cout <<  endl;
+				numberOfGemsCollected++;
+				playerFindGem2++;
+				}
+			}
+			}
+			else
+			{
+				cout << endl;
+				cout << "The Monster has been slain in this room" << endl;
+				cout << endl;
+			}
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 1)
+			{
+			if(playerEnterRoom4 == 0)
+				{
+				room4.display();
+				playerEnterRoom4++;
+				}
+				else
+				{
+				room4.displayRoomName();
+				}
+			monsterPresent = room4.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == -1)
+			{
+			if(playerEnterRoom5 == 0)
+				{
+				room5.display();
+				playerEnterRoom5++;
+				}
+				else
+				{
+				room5.displayRoomName();
+				}
+			monsterPresent = room5.isRoomOccupied();
+			}
+			else
+			{
+			cout << "Invalid direction" << endl;
+			}
+		}else if (selection == 'S' || selection == 's') {
+			cout << endl;
+            cout << "You moved south" << endl;
+		if(roomYCoordinate <= 1 && roomYCoordinate > -1)
+		   {
+		   roomYCoordinate--;
+		   }
+		   else
+		   {
+			   cout << endl;
+			   cout << "Cannot move there" << endl;
+		   }
+			if(roomXCoordinate == 0 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom1 == 0)
+				{
+				room1.display();
+				playerEnterRoom1++;
+				}
+				else
+				{
+				room1.displayRoomName();
+				}
+			}
+			else if(roomXCoordinate == 1 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom2 == 0)
+				{
+				room2.display();
+				playerEnterRoom2++;
+				}
+				else
+				{
+				room2.displayRoomName();
+				}
+			monsterPresent = room2.isRoomOccupied();
+			}
+			else if(roomXCoordinate == -1 && roomYCoordinate == 0)
+			{
+			if(playerEnterRoom3 == 0)
+				{
+				room3.display();
+				playerEnterRoom3++;
+				}
+				else
+				{
+				room3.displayRoomName();
+				}
+			monsterPresent = room3.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 1)
+			{
+			if(playerEnterRoom4 == 0)
+				{
+				room4.display();
+				playerEnterRoom4++;
+				}
+				else
+				{
+				room4.displayRoomName();
+				}
+			monsterPresent = room4.isRoomOccupied();
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == -1)
+			{
+			if(playerEnterRoom5 == 0)
+				{
+				room5.display();
+				playerEnterRoom5++;
+				}
+				else
+				{
+				room5.displayRoomName();
+				}
+				
+			if(sMonsterSlain == 0)
+			{
+			monsterPresent = room5.isRoomOccupied();
+				if(monsterPresent == 1)
+				{
+				char fightMonster3;
+				cout << endl;
+				cout << "Would you like to fight the monster in the room?(Press 'F' otherwise press any other key)" << endl;
+				  cin >> fightMonster3;
+				  if(fightMonster3 == 'f' || fightMonster3 == 'F')
+				  {
+					randomNumber4 = rand()% (4 - monstersKilled);
+					if(monsters.at(randomNumber4) == 0)
+					{
+					riddleCombat(player1.health, monster3.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 0);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber4) == 1)
+					{
+					pokemonTypeCombat(player1.health, monster2.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber4) == 2)
+					{
+					randomNumberCombat(player1.health, monster1.monsterHealth, player1.attackPower, selection);
+					indexToErase = findElementInVector(monsters, 1);
+					monsters.erase(monsters.begin() + indexToErase);
+					}
+					else if(monsters.at(randomNumber4) == 3)
+					{
+						pokemonTypeCombat2(player1.health, monster4.monsterHealth, player1.attackPower, selection);
+						indexToErase = findElementInVector(monsters, 1);
+						monsters.erase(monsters.begin() + indexToErase);
+					}
+					cout << endl;
+					cout << "You have found a gem!" << endl;
+					cout << endl;
+					cout << "The gem is the: ";
+					gem4.displayGem();
+					cout <<  endl;
+					numberOfGemsCollected++;
+					sMonsterSlain++;
+					monstersKilled++;
+				  }
+				  else
+				  {
+					  cout << "You have chosen not to fight" << endl;
+					  cout << "You shall now be moved back to the starting room" << endl;
+					  roomReset(roomXCoordinate, roomYCoordinate);
+					  room1.displayRoomName();
+				  }
+				}
+				else
+			{
+				cout << endl;
+				cout << "The room has been abandoned for a while...only a carcass of a monster remains" << endl;
+				if(playerFindGem2 == 0)
+				{
+				cout << "Within the room you find a gem!" << endl;
+				cout << "The gem is the: ";
+				gem4.displayGem();
+				cout <<  endl;
+				numberOfGemsCollected++;
+				playerFindGem2++;
+				}
+			}
+			}
+			else
+			{
+				cout << endl;
+				cout << "The Monster has been slain in this room" << endl;
+				cout << endl;
+			}
+			}
+			else
+			{
+			cout << "Invalid direction" << endl;
+			}
+		}else if (selection == 'L' || selection == 'l') {
+			cout << endl;
+            cout << "look" << endl;
+			 if(roomXCoordinate == 0 && roomYCoordinate == 0)
+			{
+			room1.display();
+			}
+			else if(roomXCoordinate == 1 && roomYCoordinate == 0)
+			{
+			room2.display();
+			if(eMonsterSlain == 0)
+				{
+				monsterPresent = room2.isRoomOccupied();
+				}
+			else
+				{
+				monster1.monsterSlain();
+				}
+			}
+			else if(roomXCoordinate == -1 && roomYCoordinate == 0)
+			{
+			room3.display();
+			if(wMonsterSlain == 0)
+				{
+				monsterPresent = room3.isRoomOccupied();
+				}
+			else
+				{
+				monster2.monsterSlain();
+				}
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == 1)
+			{
+			room4.display();
+			if(nMonsterSlain == 0)
+				{
+				monsterPresent = room4.isRoomOccupied();
+				}
+			else
+				{
+				monster4.monsterSlain();
+				}
+			}
+			else if(roomXCoordinate == 0 && roomYCoordinate == -1)
+			{
+			room5.display();
+			if(sMonsterSlain == 0)
+			{
+			monsterPresent = room5.isRoomOccupied();
+			}
+			else
+			{
+				monster4.monsterSlain();
+			}
+		}
+		}
+		else if (selection == 'P' || selection == 'p') {
+			{
+				player1.displayPlayer();
+			}
+			
+		}
+		}
+	}while (selection != 'q' && selection != 'Q');
+	cout << "game over";
+    cout  << endl;
+    return 0;
+}
